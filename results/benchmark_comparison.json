@@ -1,0 +1,81 @@
+{
+  "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "hardware": "NVIDIA A100-SXM4-40GB",
+  "method": "Two-Stage SFT Warm-Up + Multi-Turn Interleaved Tool-GRPO",
+  "baseline_pass_1": 0.0,
+  "post_trained_pass_1": 30.0,
+  "pass_1_delta": 30.0,
+  "training_duration_seconds": 258.3,
+  "training_history": [
+    {
+      "step": 1,
+      "correct_rollouts": 1,
+      "avg_reward": 0.335,
+      "loss": 0.0032,
+      "kl": 0.0226
+    },
+    {
+      "step": 2,
+      "correct_rollouts": 2,
+      "avg_reward": 0.5854,
+      "loss": -0.0583,
+      "kl": 0.0792
+    },
+    {
+      "step": 3,
+      "correct_rollouts": 1,
+      "avg_reward": 0.3321,
+      "loss": -0.0043,
+      "kl": 0.0349
+    },
+    {
+      "step": 4,
+      "correct_rollouts": 1,
+      "avg_reward": 0.3328,
+      "loss": -0.0144,
+      "kl": 0.0317
+    },
+    {
+      "step": 5,
+      "correct_rollouts": 1,
+      "avg_reward": 0.3344,
+      "loss": -0.0189,
+      "kl": 0.0375
+    },
+    {
+      "step": 6,
+      "correct_rollouts": 0,
+      "avg_reward": 0.0823,
+      "loss": 0.0452,
+      "kl": 0.0231
+    },
+    {
+      "step": 7,
+      "correct_rollouts": 0,
+      "avg_reward": 0.0842,
+      "loss": -0.0001,
+      "kl": 0.0323
+    },
+    {
+      "step": 8,
+      "correct_rollouts": 2,
+      "avg_reward": 0.5809,
+      "loss": -0.0322,
+      "kl": 0.0426
+    },
+    {
+      "step": 9,
+      "correct_rollouts": 0,
+      "avg_reward": 0.0802,
+      "loss": -0.0117,
+      "kl": 0.0416
+    },
+    {
+      "step": 10,
+      "correct_rollouts": 0,
+      "avg_reward": 0.082,
+      "loss": 0.0716,
+      "kl": 0.0513
+    }
+  ]
+}
