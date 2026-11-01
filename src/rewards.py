@@ -38,6 +38,7 @@ class CompositeRewardEvaluator:
         ground_truth: str,
         execution_failures: int = 0,
         successful_executions: int = 0,
+        reflexion_repairs: int = 0,
         token_count: int = 0,
         max_tokens: int = 1024,
     ) -> Dict[str, float]:
@@ -52,16 +53,20 @@ class CompositeRewardEvaluator:
         # Tool usage shaping: reward successful executions, penalize syntax/runtime errors
         r_exec = (0.05 * min(successful_executions, 2)) - (0.1 * min(execution_failures, 3))
 
+        # Reflexion repair bonus for recovering after an error
+        r_reflexion = 0.15 * min(reflexion_repairs, 2)
+
         # Mild length penalty for excessive token usage
         r_length = -0.02 * (token_count / max_tokens) if max_tokens > 0 else 0.0
 
-        total_reward = r_outcome + r_format + r_exec + r_length
+        total_reward = r_outcome + r_format + r_exec + r_reflexion + r_length
 
         return {
             "total_reward": round(total_reward, 4),
             "r_outcome": r_outcome,
             "r_format": round(r_format, 4),
             "r_exec": round(r_exec, 4),
+            "r_reflexion": round(r_reflexion, 4),
             "r_length": round(r_length, 4),
             "is_correct": 1.0 if is_correct else 0.0,
         }

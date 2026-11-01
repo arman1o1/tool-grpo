@@ -49,6 +49,8 @@ class MultiTurnRolloutEngine:
         execution_failures = 0
         successful_executions = 0
         tool_call_count = 0
+        had_failure = False
+        reflexion_repairs = 0
 
         while turns < self.max_turns:
             turns += 1
@@ -70,8 +72,12 @@ class MultiTurnRolloutEngine:
                 success, output = self.sandbox.execute(code_to_run)
                 if success:
                     successful_executions += 1
+                    if had_failure:
+                        reflexion_repairs += 1
+                        had_failure = False
                 else:
                     execution_failures += 1
+                    had_failure = True
 
                 obs_text = f"\n<observation>\n{output}\n</observation>\n"
                 obs_tokens = tokenizer.encode(obs_text, add_special_tokens=False)
@@ -92,6 +98,7 @@ class MultiTurnRolloutEngine:
             "tool_call_count": tool_call_count,
             "execution_failures": execution_failures,
             "successful_executions": successful_executions,
+            "reflexion_repairs": reflexion_repairs,
             "num_policy_tokens": sum(loss_mask),
             "num_env_tokens": len(loss_mask) - sum(loss_mask),
         }
@@ -119,6 +126,8 @@ class MultiTurnRolloutEngine:
         execution_failures = 0
         successful_executions = 0
         tool_calls = 0
+        had_failure = False
+        reflexion_repairs = 0
 
         while turns < self.max_turns and len(full_tokens) < max_total_tokens:
             turns += 1
@@ -154,8 +163,12 @@ class MultiTurnRolloutEngine:
                     ok, output = self.sandbox.execute(code_to_run)
                     if ok:
                         successful_executions += 1
+                        if had_failure:
+                            reflexion_repairs += 1
+                            had_failure = False
                     else:
                         execution_failures += 1
+                        had_failure = True
 
                     obs = f"\n<observation>\n{output}\n</observation>\n"
                     obs_ids = tokenizer.encode(obs, add_special_tokens=False)
@@ -172,6 +185,7 @@ class MultiTurnRolloutEngine:
             "tool_call_count": tool_calls,
             "execution_failures": execution_failures,
             "successful_executions": successful_executions,
+            "reflexion_repairs": reflexion_repairs,
             "num_policy_tokens": sum(loss_mask),
             "num_env_tokens": len(loss_mask) - sum(loss_mask),
         }

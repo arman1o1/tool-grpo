@@ -19,6 +19,21 @@ def test_reward_perfect_trajectory():
     assert scores["r_exec"] > 0.0
     assert scores["total_reward"] > 1.0
 
+def test_reward_reflexion_repair_bonus():
+    evaluator = CompositeRewardEvaluator()
+    sample = "<think>Turn 1</think><code>print(1/0)</code><observation>ZeroDivisionError</observation><think>Repair</think><code>print(42)</code><observation>42</observation><answer>42</answer>"
+    scores = evaluator.evaluate(
+        completion=sample,
+        ground_truth="#### 42",
+        execution_failures=1,
+        successful_executions=1,
+        reflexion_repairs=1,
+        token_count=80,
+    )
+    assert scores["is_correct"] == 1.0
+    assert scores["r_reflexion"] == 0.15
+    assert scores["total_reward"] > 1.0
+
 def test_reward_missing_answer_tag():
     evaluator = CompositeRewardEvaluator()
     sample = "<think>Thinking about 42...</think> The answer is 42."
@@ -28,7 +43,6 @@ def test_reward_missing_answer_tag():
         execution_failures=0,
         successful_executions=0,
     )
-    # Correct because fallback extracts 42, but format reward is penalized (-0.2)
     assert scores["r_format"] < 0.0
 
 def test_reward_unhandled_execution_penalties():

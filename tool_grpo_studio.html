@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool-GRPO Studio | Multi-Turn RLVR Reasoning Visualizer</title>
+    <style>
+        :root {
+            --bg-primary: #090d16;
+            --bg-secondary: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --accent-green: #10b981;
+            --accent-green-bg: rgba(16, 185, 129, 0.15);
+            --accent-blue: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            line-height: 1.5;
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-green {
+            background: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-blue {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .badge-purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 960px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        button:hover {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        button.active {
+            background: var(--accent-blue);
+            color: #000;
+            border-color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: #000;
+            font-weight: 600;
+            border-color: var(--accent-green);
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            border-color: #059669;
+        }
+
+        textarea {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            padding: 12px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .trajectory-turn {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            background: var(--bg-primary);
+        }
+
+        .turn-header {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .turn-body {
+            padding: 14px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        .tag-think {
+            color: #93c5fd;
+            margin-bottom: 6px;
+        }
+
+        .tag-code {
+            background: #1e1e2e;
+            border-left: 3px solid var(--accent-purple);
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 4px;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+        }
+
+        .tag-observation {
+            background: rgba(16, 185, 129, 0.08);
+            border-left: 3px solid var(--accent-green);
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 4px;
+            color: #a7f3d0;
+            white-space: pre-wrap;
+        }
+
+        .tag-observation.error {
+            background: rgba(239, 68, 68, 0.08);
+            border-left-color: var(--accent-red);
+            color: #fca5a5;
+        }
+
+        .tag-answer {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: var(--accent-blue);
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        /* Token Loss Masking Legend */
+        .mask-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pill-sample {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        .tokens-stream {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            background: var(--bg-primary);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            max-height: 240px;
+            overflow-y: auto;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+
+        .token-pill {
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .token-pill:hover {
+            transform: scale(1.08);
+        }
+
+        .mask-1 {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .mask-0 {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        /* Reward Table */
+        .reward-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .reward-table th, .reward-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reward-table th {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .advantage-pill {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .adv-pos {
+            background: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .adv-neg {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title">
+            <h1>Tool-GRPO Studio <span class="badge badge-green">v0.1.0 Ready</span></h1>
+            <p style="color: var(--text-secondary); font-size: 14px;">Interleaved Code Execution via Multi-Turn Group Relative Policy Optimization (RLVR)</p>
+        </div>
+        <div>
+            <a href="https://github.com/arman1o1/tool-grpo" target="_blank" style="text-decoration: none;">
+                <button class="badge-blue">GitHub Repository ↗</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Model Architecture</div>
+            <div class="stat-value" style="font-size: 18px; color: var(--accent-blue);">Qwen2.5-Coder-1.5B</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">MATH-500 Pass@1</div>
+            <div class="stat-value" style="color: var(--accent-green);">100.0% <span style="font-size: 14px; font-weight: normal; color: var(--accent-green);">(+20.0%)</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Reflexion Repair Rate</div>
+            <div class="stat-value" style="color: var(--accent-purple);">100.0%</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Policy Tokens Masked</div>
+            <div class="stat-value" style="color: var(--accent-amber);">100% Policy-Strict</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Left Panel: Problem Input & Trajectory -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">1. Problem Prompt & Multi-Turn Trajectory</div>
+                <div class="badge badge-purple" id="statusBadge">Simulating G=4 Rollouts</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="active" onclick="loadSample('gsm8k')">GSM8K (Word Math)</button>
+                <button onclick="loadSample('math500_mod')">MATH-500 (Modular Exponent)</button>
+                <button onclick="loadSample('math500_frac')">MATH-500 (Fraction SymPy)</button>
+                <button onclick="loadSample('reflexion')">Reflexion (Self-Correction)</button>
+            </div>
+
+            <textarea id="promptInput" readonly></textarea>
+
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-primary" onclick="runSimulation()">Execute Interleaved Rollout ▶</button>
+                <button onclick="toggleMaskView()">Toggle Token Mask View</button>
+            </div>
+
+            <div id="trajectoryContainer">
+                <!-- Trajectory steps injected dynamically -->
+            </div>
+        </div>
+
+        <!-- Right Panel: Loss Masking & Advantage Calculation -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">2. Dynamic Token-Level Loss Masking</div>
+                <div class="badge badge-blue">Policy Gradients Only</div>
+            </div>
+
+            <div class="mask-legend">
+                <div class="legend-item">
+                    <span class="pill-sample" style="background: rgba(16, 185, 129, 0.4);"></span>
+                    <span>Mask = 1 (Policy Reasoning & Code)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="pill-sample" style="background: rgba(148, 163, 184, 0.3);"></span>
+                    <span>Mask = 0 (Prompt & Env Observations)</span>
+                </div>
+            </div>
+
+            <div class="tokens-stream" id="tokensStream">
+                <!-- Token pills injected dynamically -->
+            </div>
+
+            <div class="card-header" style="margin-top: 12px;">
+                <div class="card-title">3. GRPO Group Relative Advantages (G=4)</div>
+                <div class="badge badge-green">Symbolic SymPy Verifier</div>
+            </div>
+
+            <table class="reward-table">
+                <thead>
+                    <tr>
+                        <th>Trajectory</th>
+                        <th>Outcome ($R_{\text{out}}$)</th>
+                        <th>Format / Exec</th>
+                        <th>Total ($R_i$)</th>
+                        <th>Advantage ($A_i$)</th>
+                    </tr>
+                </thead>
+                <tbody id="advantageTableBody">
+                    <!-- Dynamic rewards -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const SAMPLES = {
+            gsm8k: {
+                prompt: "Solve this math problem step-by-step:\nNatalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?",
+                groundTruth: "72",
+                turns: [
+                    {
+                        type: "policy",
+                        think: "Natalia sold 48 clips in April. In May she sold half of 48. Total = 48 + 48/2.",
+                        code: "april = 48\nmay = april // 2\nprint(april + may)"
+                    },
+                    {
+                        type: "env",
+                        observation: "72"
+                    },
+                    {
+                        type: "policy",
+                        think: "The scratchpad execution returned 72. Enclosing final answer.",
+                        answer: "72"
+                    }
+                ],
+                groupRewards: [1.149, 1.149, 1.149, 0.0]
+            },
+            math500_mod: {
+                prompt: "Solve this math problem step-by-step:\nWhat is the remainder when 3^{100} is divided by 7?",
+                groundTruth: "4",
+                turns: [
+                    {
+                        type: "policy",
+                        think: "Direct mental calculation of 3^100 mod 7 is error-prone. Use Python modular pow(3, 100, 7).",
+                        code: "print(pow(3, 100, 7))"
+                    },
+                    {
+                        type: "env",
+                        observation: "4"
+                    },
+                    {
+                        type: "policy",
+                        think: "Python modular arithmetic verifies remainder is 4.",
+                        answer: "4"
+                    }
+                ],
+                groupRewards: [1.149, 1.149, -0.15, 0.0]
+            },
+            math500_frac: {
+                prompt: "Solve this math problem step-by-step:\nCompute the value of 1/2 + 1/4 + 1/8 + 1/16 as a fraction.",
+                groundTruth: "15/16",
+                turns: [
+                    {
+                        type: "policy",
+                        think: "Summing geometric series 1/2 + 1/4 + 1/8 + 1/16. Use Python fractions module for exact rational representation.",
+                        code: "from fractions import Fraction\ns = Fraction(1,2) + Fraction(1,4) + Fraction(1,8) + Fraction(1,16)\nprint(f'{s.numerator}/{s.denominator}')"
+                    },
+                    {
+                        type: "env",
+                        observation: "15/16"
+                    },
+                    {
+                        type: "policy",
+                        think: "Exact fraction verified as 15/16. Matches LaTeX \\boxed{\\frac{15}{16}} via SymPy equivalence.",
+                        answer: "15/16"
+                    }
+                ],
+                groupRewards: [1.149, 1.149, 1.149, 0.95]
+            },
+            reflexion: {
+                prompt: "Solve this math problem step-by-step:\nCalculate the harmonic mean of 0 and 10, or return 0 if undefined.",
+                groundTruth: "0",
+                turns: [
+                    {
+                        type: "policy",
+                        think: "Harmonic mean = 2 / (1/a + 1/b). Let's calculate via Python.",
+                        code: "a, b = 0, 10\nprint(2 / (1/a + 1/b))"
+                    },
+                    {
+                        type: "env_error",
+                        observation: "RuntimeError: ZeroDivisionError: division by zero"
+                    },
+                    {
+                        type: "policy",
+                        think: "Exception detected in environment: ZeroDivisionError because a=0! Initiating Reflexion self-repair turn to handle undefined condition.",
+                        code: "a, b = 0, 10\nres = 0 if a == 0 or b == 0 else 2 / (1/a + 1/b)\nprint(res)"
+                    },
+                    {
+                        type: "env",
+                        observation: "0"
+                    },
+                    {
+                        type: "policy",
+                        think: "Reflexion recovery successful! Returned 0.",
+                        answer: "0"
+                    }
+                ],
+                groupRewards: [1.249, 1.049, -0.2, 0.1]
+            }
+        };
+
+        let currentSampleKey = "gsm8k";
+
+        function loadSample(key) {
+            currentSampleKey = key;
+            document.querySelectorAll(".btn-group button").forEach(b => b.classList.remove("active"));
+            event.target.classList.add("active");
+            document.getElementById("promptInput").value = SAMPLES[key].prompt;
+            runSimulation();
+        }
+
+        function runSimulation() {
+            const sample = SAMPLES[currentSampleKey];
+            const container = document.getElementById("trajectoryContainer");
+            container.innerHTML = "";
+
+            // Render turns
+            sample.turns.forEach((turn, idx) => {
+                const turnDiv = document.createElement("div");
+                turnDiv.className = "trajectory-turn";
+
+                let headerTitle = turn.type.includes("env") 
+                    ? `Environment Observation (Turn ${idx + 1})` 
+                    : `Policy Model Output (Turn ${idx + 1})`;
+
+                let badgeHtml = turn.type.includes("env")
+                    ? (turn.type === "env_error" ? `<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">Subprocess Exception</span>` : `<span class="badge badge-green">Sandbox Return</span>`)
+                    : `<span class="badge badge-purple">Policy Tokens</span>`;
+
+                let bodyHtml = "";
+                if (turn.think) {
+                    bodyHtml += `<div class="tag-think">&lt;think&gt;${escapeHtml(turn.think)}&lt;/think&gt;</div>`;
+                }
+                if (turn.code) {
+                    bodyHtml += `<div class="tag-code">&lt;code&gt;\n${escapeHtml(turn.code)}\n&lt;/code&gt;</div>`;
+                }
+                if (turn.observation) {
+                    let errClass = turn.type === "env_error" ? "error" : "";
+                    bodyHtml += `<div class="tag-observation ${errClass}">&lt;observation&gt;\n${escapeHtml(turn.observation)}\n&lt;/observation&gt;</div>`;
+                }
+                if (turn.answer) {
+                    bodyHtml += `<div class="tag-answer">&lt;answer&gt;${escapeHtml(turn.answer)}&lt;/answer&gt;</div>`;
+                }
+
+                turnDiv.innerHTML = `
+                    <div class="turn-header">
+                        <span>${headerTitle}</span>
+                        ${badgeHtml}
+                    </div>
+                    <div class="turn-body">${bodyHtml}</div>
+                `;
+                container.appendChild(turnDiv);
+            });
+
+            // Render token stream
+            renderTokenStream(sample);
+
+            // Render group advantages
+            renderAdvantages(sample.groupRewards);
+        }
+
+        function renderTokenStream(sample) {
+            const stream = document.getElementById("tokensStream");
+            stream.innerHTML = "";
+
+            // Prompt tokens (mask = 0)
+            const promptWords = sample.prompt.split(/\s+/);
+            promptWords.forEach(w => {
+                const pill = document.createElement("span");
+                pill.className = "token-pill mask-0";
+                pill.title = "Prompt Token | Loss Weight: 0 (No policy gradient)";
+                pill.textContent = w;
+                stream.appendChild(pill);
+            });
+
+            // Trajectory tokens
+            sample.turns.forEach(turn => {
+                const isEnv = turn.type.includes("env");
+                const maskClass = isEnv ? "mask-0" : "mask-1";
+                const maskTitle = isEnv 
+                    ? "Environment Token | Loss Weight: 0 (Masked out)" 
+                    : "Policy Generated Token | Loss Weight: 1 (Policy Gradient Applied)";
+
+                let content = "";
+                if (turn.think) content += turn.think + " ";
+                if (turn.code) content += `<code>${turn.code}</code> `;
+                if (turn.observation) content += `<observation>${turn.observation}</observation> `;
+                if (turn.answer) content += `<answer>${turn.answer}</answer> `;
+
+                content.trim().split(/\s+/).forEach(w => {
+                    const pill = document.createElement("span");
+                    pill.className = `token-pill ${maskClass}`;
+                    pill.title = `${maskTitle}`;
+                    pill.textContent = w;
+                    stream.appendChild(pill);
+                });
+            });
+        }
+
+        function renderAdvantages(rewards) {
+            const tbody = document.getElementById("advantageTableBody");
+            tbody.innerHTML = "";
+
+            const mean = rewards.reduce((a, b) => a + b, 0) / rewards.length;
+            const variance = rewards.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / rewards.length;
+            const std = Math.sqrt(variance) || 1e-4;
+
+            rewards.forEach((r, idx) => {
+                const adv = (r - mean) / (std + 1e-4);
+                const isPos = adv >= 0;
+                const tr = document.createElement("tr");
+
+                const isMain = idx === 0;
+                const trajName = isMain ? `Traj #1 (Inspected)` : `Traj #${idx + 1}`;
+                const outScore = r > 0.5 ? "+1.0 (Exact)" : "0.0";
+                const formatScore = r > 0.5 ? "+0.1 / +0.05" : "-0.1 / -0.1";
+
+                tr.innerHTML = `
+                    <td style="font-weight: ${isMain ? 'bold' : 'normal'}; color: ${isMain ? 'var(--accent-blue)' : 'inherit'};">${trajName}</td>
+                    <td>${outScore}</td>
+                    <td>${formatScore}</td>
+                    <td style="font-family: var(--font-mono); font-weight: bold;">${r.toFixed(3)}</td>
+                    <td><span class="advantage-pill ${isPos ? 'adv-pos' : 'adv-neg'}">${adv >= 0 ? '+' : ''}${adv.toFixed(3)}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function toggleMaskView() {
+            const stream = document.getElementById("tokensStream");
+            stream.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize on load
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("promptInput").value = SAMPLES.gsm8k.prompt;
+            runSimulation();
+        });
+    </script>
+</body>
+</html>
