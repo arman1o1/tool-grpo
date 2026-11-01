@@ -1,0 +1,142 @@
+[
+  {
+    "step": 1,
+    "correct_rollouts": 0,
+    "avg_reward": 0.6506,
+    "loss": 0.0253,
+    "kl": 0.0
+  },
+  {
+    "step": 2,
+    "correct_rollouts": 4,
+    "avg_reward": 1.0619,
+    "loss": 0.005,
+    "kl": -0.0
+  },
+  {
+    "step": 3,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1488,
+    "loss": 0.0156,
+    "kl": 0.0
+  },
+  {
+    "step": 4,
+    "correct_rollouts": 0,
+    "avg_reward": -0.0464,
+    "loss": -0.0202,
+    "kl": 0.0002
+  },
+  {
+    "step": 5,
+    "correct_rollouts": 0,
+    "avg_reward": -0.158,
+    "loss": 0.009,
+    "kl": 0.0002
+  },
+  {
+    "step": 6,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1488,
+    "loss": 0.0,
+    "kl": 0.0002
+  },
+  {
+    "step": 7,
+    "correct_rollouts": 0,
+    "avg_reward": -0.0446,
+    "loss": -0.0497,
+    "kl": 0.0003
+  },
+  {
+    "step": 8,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1542,
+    "loss": 0.0,
+    "kl": 0.0001
+  },
+  {
+    "step": 9,
+    "correct_rollouts": 0,
+    "avg_reward": -0.129,
+    "loss": -0.0023,
+    "kl": 0.0004
+  },
+  {
+    "step": 10,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1492,
+    "loss": 0.0,
+    "kl": 0.0002
+  },
+  {
+    "step": 11,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1503,
+    "loss": 0.0,
+    "kl": 0.0
+  },
+  {
+    "step": 12,
+    "correct_rollouts": 0,
+    "avg_reward": 0.071,
+    "loss": 0.0586,
+    "kl": 0.0
+  },
+  {
+    "step": 13,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1456,
+    "loss": 0.0,
+    "kl": 0.0001
+  },
+  {
+    "step": 14,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1492,
+    "loss": 0.0,
+    "kl": 0.0
+  },
+  {
+    "step": 15,
+    "correct_rollouts": 2,
+    "avg_reward": 0.9511,
+    "loss": 0.0142,
+    "kl": 0.0004
+  },
+  {
+    "step": 16,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1495,
+    "loss": 0.0,
+    "kl": 0.0001
+  },
+  {
+    "step": 17,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1477,
+    "loss": 0.0,
+    "kl": 0.0001
+  },
+  {
+    "step": 18,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1508,
+    "loss": -0.0,
+    "kl": -0.0
+  },
+  {
+    "step": 19,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1487,
+    "loss": 0.0,
+    "kl": 0.0
+  },
+  {
+    "step": 20,
+    "correct_rollouts": 0,
+    "avg_reward": -0.1487,
+    "loss": -0.0,
+    "kl": -0.0
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "GSM8K": {
+    "baseline_pass_1": 100.0,
+    "tool_grpo_pass_1": 100.0,
+    "pass_1_delta": 0.0,
+    "tool_calls": 5,
+    "execution_failures": 0,
+    "samples_evaluated": 5
+  },
+  "MATH-500": {
+    "baseline_pass_1": 80.0,
+    "tool_grpo_pass_1": 100.0,
+    "pass_1_delta": 20.0,
+    "tool_calls": 5,
+    "execution_failures": 0,
+    "samples_evaluated": 5
+  }
+}
