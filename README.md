@@ -14,7 +14,7 @@ Rather than treating code generation as a single-turn output, Tool-GRPO models p
 
 ## Interactive Visual Studio
 
-Open [`tool_grpo_studio.html`](tool_grpo_studio.html) directly in any browser to inspect multi-turn interleaved rollouts, sandbox execution feedback, dynamic token loss masking ($M_{i,t} \in \{0, 1\}$), and group relative advantage calculations ($G=4$) with pre-loaded GSM8K, MATH-500, and Reflexion self-correction demos.
+Open [`tool_grpo_studio.html`](tool_grpo_studio.html) directly in any browser to inspect multi-turn interleaved rollouts, sandbox execution feedback, dynamic token loss masking ($M_{i,t} \in \lbrace 0, 1 \rbrace$), and group relative advantage calculations ($G=4$) with pre-loaded GSM8K, MATH-500, and Reflexion self-correction demos.
 
 ---
 
@@ -94,7 +94,7 @@ $$\bar{R} = \frac{1}{G} \sum_{i=1}^G R(y_i), \quad \sigma_R = \sqrt{\frac{1}{G} 
 $$A_i = \frac{R(y_i) - \bar{R}}{\sigma_R + \epsilon}$$
 
 ### 2. Token-Level Loss Masking with Policy Surrogate Objective
-Policy gradients are computed using a clipped surrogate objective, masked by token indicators $M_{i,t} \in \{0, 1\}$:
+Policy gradients are computed using a clipped surrogate objective, masked by token indicators $M_{i,t} \in \lbrace 0, 1 \rbrace$:
 
 $$\mathcal{L}_{\text{GRPO}}(\theta) = -\frac{1}{G} \sum_{i=1}^G \frac{1}{\sum_{t} M_{i,t}} \sum_{t=1}^{T_i} M_{i,t} \left[ \min\left( r_{i,t}(\theta) A_i, \text{clip}(r_{i,t}(\theta), 1-\epsilon, 1+\epsilon) A_i \right) - \beta D_{\text{KL}}(\pi_\theta \parallel \pi_{\text{ref}}) \right]$$
 

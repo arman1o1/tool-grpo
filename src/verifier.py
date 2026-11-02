@@ -142,7 +142,14 @@ class MathVerifier:
             p_expr = parse_expr(p_clean, transformations=transformations)
             g_expr = parse_expr(g_clean, transformations=transformations)
             diff = simplify(p_expr - g_expr)
-            return bool(diff == 0)
+            if diff == 0:
+                return True
+            try:
+                if abs(float(diff)) < 1e-4:
+                    return True
+            except Exception:
+                pass
+            return False
         except Exception:
             return False
 
