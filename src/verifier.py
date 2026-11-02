@@ -92,11 +92,14 @@ class MathVerifier:
     def extract_ground_truth(self, solution: str) -> str:
         """
         Extracts ground-truth solution from standard benchmark strings.
-        Supports GSM8K '#### <answer>' and MATH '\\boxed{<answer>}'.
+        Supports <answer>...</answer>, GSM8K '#### <answer>', and MATH '\\boxed{<answer>}'.
         """
         if not solution:
             return ""
-        if self.gsm8k_delim in solution:
+        matches = self.answer_tag_pattern.findall(solution)
+        if matches:
+            gt = matches[-1].strip()
+        elif self.gsm8k_delim in solution:
             gt = solution.split(self.gsm8k_delim)[-1].strip()
         else:
             gt = solution.strip()
